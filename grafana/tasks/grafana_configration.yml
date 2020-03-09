@@ -1,0 +1,26 @@
+---
+- hosts: server3
+  vars:
+    grafana_version: 2.5.0
+    arch: amd64
+    grafana_filename: grafana_{{ grafana_version }}_{{ arch }}.deb
+
+  tasks:
+
+  - name: Download grafana deb file
+    get_url:
+      url="https://grafanarel.s3.amazonaws.com/builds/{{ grafana_filename }}"
+      dest="/tmp/{{ grafana_filename }}"
+
+  - name: Verify grafana deb file
+    command: dpkg-deb -W --showformat='${version}' /tmp/{{ grafana_filename }}
+
+  - name: Install grafana
+    apt: deb="/tmp/{{ grafana_filename }}" state=present
+
+  - name: Start grafana service
+    service:
+      name: grafana-server
+      state: started
+      enabled: yes
+
