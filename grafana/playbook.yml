@@ -1,0 +1,7 @@
+---
+- hosts: server3
+  become: yes
+  become_user: root
+  become_method: sudo
+  roles:
+    - grafana_configration
